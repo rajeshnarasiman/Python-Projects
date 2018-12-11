@@ -1,0 +1,98 @@
+---
+title: "Introduction to Stats and Linear Modeling Assignment 5"
+output:
+  pdf_document: default
+  html_notebook: default
+  word_document: default
+---
+
+```{r error= FALSE}
+traindata=simmons[1:500,]
+testdata=simmons[501:1000,]
+head(traindata)
+
+
+#Question 1:
+#Model 1: We shall use HasCard and Spends as predictor variables and see if our variable are significant. We can see that the significance is very low or we can say that there is no significance.
+
+logist=glm(UsesCoupon~Spends+HasCard,data=traindata,family = binomial(link="logit"))
+summary(logist)
+
+#Model 2: lets try to use intercept as 0 and the other 2 variables to check if this giving any significant value. We can see that only spends variable has more significance
+logist_1=glm(UsesCoupon~0+Spends+HasCard,data=traindata,family = binomial(link="logit"))
+summary(logist_1)
+
+# Model 3
+logist_2= glm(UsesCoupon~Spends,data=traindata,family = binomial(link="logit"))
+summary(logist_2)
+
+# Model 4: As we can see that the spends has more significant than other variable we shall impute 0 for intercept and keep only spends as respondant.
+logist_3= glm(UsesCoupon~0+(Spends),data=traindata,family = binomial(link="logit"))
+summary(logist_3)
+
+# since model 4 is very significant for our data we shall plot the graphs for that
+plot(logist_3)
+
+#As per the below plot we can say that the coupons are used even if the customer has card or no card. But the coupons are definetly used when the customer has card.
+plot(simmons$HasCard~simmons$UsesCoupon)
+
+#Question 2:
+nullm <- glm(UsesCoupon ~ 1, family = binomial,data=simmons)
+summary(nullm)
+x= 1-logLik(logist_3)/logLik(nullm)
+# As the AIC value is not reliable as we have low value for model 1 where the variables are not significant and high for model 4 where the Spend variable is much significant.
+
+#We have pseudo R squared value is not in the range( 0.2 and 0.4) but still its reasonable.
+print(paste("The pseudo R squared value is: " ,x))
+
+
+#Question 3:
+library(InformationValue)
+predicted = predict(logist_3,testdata,type="response")
+predicted
+predict_decision= 0.89
+
+class_error=  misClassError(testdata, predicted, threshold = predict_decision)
+class_error
+
+#Confusion Matrix table
+confusion_matrix=confusionMatrix(testdata$UsesCoupon,predicted,threshold=predict_decision)
+confusion_matrix
+
+# As we can see from the confusion matrix table we have mispredicted 156 as uses the coupon but the customer is actually not using the coupon.
+
+#Question 4:
+
+#This function converts logist to probability.
+probs <- function(logit){
+  odds <- exp(logit)
+  prob <- odds / (1 + odds)
+  return(prob)
+}
+#Gives the porbability value of the intercept and coefficient
+probs(coef(logist_2))
+
+#We are basically using the below function to convert the logist values into probability
+#UseCoupon = HasCard + Spends*(1) # as given in the dataset $1000 is nothing but 1
+
+intercept=coef(logist_2)[1]
+intercept
+
+Spends= coef(logist_2)[2]
+Spends
+
+y= data.frame(Spends=c(1,2,3,4,5,6,7))
+
+x= data.frame(HasCards=c(0,1))
+
+#HasCards= coef(logist)[3]
+#HasCards
+
+
+UsesCoupon= (intercept + y * Spends)
+UsesCoupon
+
+#This will give the probability for UseCoupon for HasCard has 0 or 1
+probability= probs(UsesCoupon)
+probability
+```
