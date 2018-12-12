@@ -1,12 +1,7 @@
----
-title: "Intro to Statistics and Linear Modelling Assignment 4"
-output:
-  word_document: default
-  html_notebook: default
----
+
 #These days, there are a lot of discussions about what should the healthcare system look like in US. For a scientific discussion, one should need to have a model of demand in the healthcare system. In this project, we will work on the the dataset dvisit which is about modeling the demand for doctor visits in terms of explanatory variables such as age, income, existence of health insurance and others.
 
-```{r}
+
 library(faraway)
 library(ggplot2)
 data(dvisits)
@@ -52,6 +47,7 @@ plot(regress.lm_5)
 len= length(residuals(regress.lm_5))
 corelation= cor(head(residuals(regress.lm_5),len-1),tail(residuals(regress.lm_5),len-1))
 print(paste("The correlation is: " ,corelation), quote=FALSE)
+
 # The correlation between the error is not that low, this explains us that there is some relationship between the residuals.
 
 #Question 5:
@@ -60,6 +56,5 @@ print(paste("The correlation is: " ,corelation), quote=FALSE)
 #Question 6:
 regress.lm_5 = lm(sqrt(hospdays)~0+agesq+freerepa+actdays+chcond2+nondocco+hospadmi,data=dvisits)
 summary(regress.lm_5)
-#Based on our linear modelling we can say that 1 unit increase in age will give you an increase in hospital days by 0.0441(0.21^2). For 1 unit of increase in freerepa(provided by government) will increase the hospital days by 0.0065.If they have cronic ondition and limited in activity then there will be an increase in hospital days by 0.0071.Similarly, 1 unit increase in no of consultations with non doctor will increase the hospi days by 0.0028 and increase in hospital admissions will tend to increase the hospital days by 2.40.
 
-```
+#Based on our linear modelling we can say that 1 unit increase in age will give you an increase in hospital days by 0.0441(0.21^2). For 1 unit of increase in freerepa(provided by government) will increase the hospital days by 0.0065.If they have cronic ondition and limited in activity then there will be an increase in hospital days by 0.0071.Similarly, 1 unit increase in no of consultations with non doctor will increase the hospi days by 0.0028 and increase in hospital admissions will tend to increase the hospital days by 2.40.
