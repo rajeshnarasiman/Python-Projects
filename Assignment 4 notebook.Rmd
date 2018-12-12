@@ -1,0 +1,65 @@
+---
+title: "Intro to Statistics and Linear Modelling Assignment 4"
+output:
+  word_document: default
+  html_notebook: default
+---
+#These days, there are a lot of discussions about what should the healthcare system look like in US. For a scientific discussion, one should need to have a model of demand in the healthcare system. In this project, we will work on the the dataset dvisit which is about modeling the demand for doctor visits in terms of explanatory variables such as age, income, existence of health insurance and others.
+
+```{r}
+library(faraway)
+library(ggplot2)
+data(dvisits)
+head(dvisits)
+
+#Question 1
+regress.lm = lm(dvisits$hospdays~.,data=dvisits)
+summary(regress.lm)
+
+#When we check the summary by including all the predictor variables we can notice that the R squared value is not convincing. Let's try to increase the value by only taking the values which are significant to the respondents,we can see the variables like  sex,age,agesq,freerepa,actdays,chcond2,nondocco and hospiadmi are significant at 0.01. Let's create a linear regression for these variables and see if the R squared value is increasing.
+
+regress.lm_1 = lm(hospdays~sex+age+agesq+freerepa+actdays+chcond2+nondocco+hospadmi,data=dvisits)
+summary(regress.lm_1)
+#attach(dvisits)
+#Here the R Squared value is decreasing
+
+#When all the predictor variables are 0 and the hospital days will also be zero. So lets replace the intercept with 0.
+regress.lm_2 = lm(hospdays~0+sex+age+agesq+freerepa+actdays+chcond2+nondocco+hospadmi,data=dvisits)
+summary(regress.lm_2)
+#As we can see sex predictor is not much significant for our model. So lets try to remove sex variable and run our regression
+
+regress.lm_3 = lm(hospdays~0+age+agesq+freerepa+actdays+chcond2+nondocco+hospadmi,data=dvisits)
+summary(regress.lm_3)
+#plot(regress.lm_3)
+#Now lets take squareroot for the respondant variable and check how our model is performing.
+regress.lm_4 = lm(sqrt(hospdays)~0+age+agesq+freerepa+actdays+chcond2+nondocco+hospadmi,data=dvisits)
+summary(regress.lm_4)
+#We can see that age predictor is not much significant for our model so lets remove age and lets regress our last model.
+regress.lm_5 = lm(sqrt(hospdays)~0+agesq+freerepa+actdays+chcond2+nondocco+hospadmi,data=dvisits)
+summary(regress.lm_5)
+plot(regress.lm_5)
+
+#Question 2:
+#The above model is better because we have improved the R-Squared value by imputing the 0 value for intercept 
+
+#The Residual vs Fitted chart tells us that the errors are not scattered and we can see that there is some sort of trend. Based on this we can say that the errors are not normally distributed.
+
+#Question 3:
+#As we can see in the Q-Q plot, the lines are not fitting in the straight line and this confirms that the data is not normally distributed. And our assumption of normal distribution is wrong since the data is skewed.
+
+#Question 4:
+#To find the co-relation between the errors
+len= length(residuals(regress.lm_5))
+corelation= cor(head(residuals(regress.lm_5),len-1),tail(residuals(regress.lm_5),len-1))
+print(paste("The correlation is: " ,corelation), quote=FALSE)
+# The correlation between the error is not that low, this explains us that there is some relationship between the residuals.
+
+#Question 5:
+#As we can see in the Residuals vs Leverage plot we can see that there are few influential points(which are closer to the red line) like 948, 3349 and 529 we can exclude these points from our dataset.
+
+#Question 6:
+regress.lm_5 = lm(sqrt(hospdays)~0+agesq+freerepa+actdays+chcond2+nondocco+hospadmi,data=dvisits)
+summary(regress.lm_5)
+#Based on our linear modelling we can say that 1 unit increase in age will give you an increase in hospital days by 0.0441(0.21^2). For 1 unit of increase in freerepa(provided by government) will increase the hospital days by 0.0065.If they have cronic ondition and limited in activity then there will be an increase in hospital days by 0.0071.Similarly, 1 unit increase in no of consultations with non doctor will increase the hospi days by 0.0028 and increase in hospital admissions will tend to increase the hospital days by 2.40.
+
+```
