@@ -1,4 +1,15 @@
-Store coupon usage prediction.Rmd
+### Read the simmons.csv file in R which contains data about the Simmons stores. The
+# simmons.csv dataset contains the following information:
+# • UsesCoupon: Whether a customer uses a coupon provided by the stores.
+# • HasCard: Whether the customer has a store card or not.
+# • Spends: The total amount spent by the customer in the last year in the unit of $1000.
+# • Customer: The id of the customer.
+
+# The aim of the following exercise is to predict the probability that customers will use the coupons provided to them by a store (predicting the coupon variable below based on the spending level and whether the customer has a store card or not.)
+# (1) Fit a logistic regression model with the UsesCoupon as the response and other variables Spends and HasCard as potential predictors. Make sure that variables in your model are significant. Perform regression diagnostics on this model to answer the following questions. Display any plots that are relevant.
+# (2) Why is your model a good/reasonable model? Check the AIC and pseudo-R2 values.
+# (3) Check the structure of the relationship btw the predictors and the response. Would transforming the predictors be helpful or not?
+# (4) Make a table that contains the estimated (fitted) probabilities of your model versus the predictors HasCard and Spends. Your table should look like this where you will be filling out the missing values. Does having a store card increase the likelihood of the customers’ using the coupons? for $1000,$2000,$3000,$4000,$5000,$6000,$7000
 
 traindata=simmons[1:500,]
 testdata=simmons[501:1000,]
